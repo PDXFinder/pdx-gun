@@ -2,7 +2,7 @@ package org.pdxfinder.constants;
 
 public enum Location {
 
-    DESTINATION(System.getProperty("user.home")+"/Docker/dockerise-postgres-data/init.sql"),
+    DESTINATION(System.getProperty("user.dir")+"/init.sql"),
     ONCO_MX_FILE(System.getProperty("user.home")+"/Documents/data-bridge/human_cancer_mutation.csv");
 
     private String value;
