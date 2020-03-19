@@ -3,6 +3,7 @@ image: java:latest
 stages:
   - build
   - database
+  - docker
   - test
 
 maven-build:
@@ -28,9 +29,23 @@ init-database:
     expire_in: 1 day
 
 
-test:
-  stage: test
+docker-build:
+  # Official docker image.
+  image: docker:latest
+  stage: docker
+  services:
+    - docker:dind
+  before_script:
+    - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - echo "Testing jar file exist"
-    - test -f "init.sql"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+
+    # PUSH THE IMAGE TO DOCKER HUB
+    - echo "${PDX_DOCKER_HUB_PWD}" | docker login -u "${PDX_DOCKER_HUB_USER}" --password-stdin
+
+    - docker tag "${CI_REGISTRY_IMAGE}" "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
+    - docker push "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
+    - docker logout
+
 
