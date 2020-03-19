@@ -21,7 +21,7 @@ init-database:
   stage: database
   script:
     - echo "Initializing Postgres Database"
-    - java -jar pdx-gun.jar
+    - /usr/lib/jvm/java-8-openjdk-amd64/bin/java -jar pdx-gun.jar
   artifacts:
     paths:
       - init.sql
