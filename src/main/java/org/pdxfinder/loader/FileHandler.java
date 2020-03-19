@@ -69,7 +69,7 @@ public class FileHandler {
                 while ((inputLine = in.readLine()) != null) {
 
                     this.write(inputLine+"\n", destination.get(), true);
-                    this.getSize(destination, urlStr, x);
+                    if (x%100000 == 0) this.getSize(destination, x);
                     x++;
                 }
             }
@@ -107,15 +107,15 @@ public class FileHandler {
     }
 
 
-    private void getSize(Location fileLocation, Location desc, int count){
+    private void getSize(Location fileLocation, int count){
 
         File file = new File(fileLocation.get());
 
         double size = file.length() / (1024 * 1024);
 
         String anim= "|/-\\";
-        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded from %s", anim.charAt(count % anim.length()),
-                                        size, fileLocation, desc.get()) );
+        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded", anim.charAt(count % anim.length()),
+                                        size, fileLocation) );
     }
 
 
