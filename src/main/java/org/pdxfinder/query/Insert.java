@@ -75,5 +75,3 @@ public class Insert {
     }
 
 }
-
-// https://civicdb.org/links/entrez_name/CXCR4
