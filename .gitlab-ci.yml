@@ -1,8 +1,9 @@
 stages:
   - build
+  - database
   - test
 
-build-jar:
+maven-build:
   image: maven:3-jdk-8
   stage: build
   script:
@@ -13,13 +14,21 @@ build-jar:
       - pdx-gun.jar
     expire_in: 1 day
 
+
+init-database:
+  stage: database
+  script:
+    - echo "Initializing Postgres Database"
+    - java -jar pdx-gun.jar
+  artifacts:
+    paths:
+      - init.sql
+    expire_in: 1 day
+
+
 test:
   stage: test
   script:
     - echo "Testing jar file exist"
-    - test -f "pdx-gun.jar"
-
-
-
-
+    - test -f "init.sql"
 
