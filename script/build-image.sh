@@ -11,13 +11,13 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # remove database docker image
-docker rmi $(docker images |grep 'abayomiebi/postgres')
+docker rmi $(docker images |grep 'abayomiebi/pdx-gun')
 
 # remove hasura docker image
 docker rmi $(docker images |grep 'hasura/graphql-engine')
 
 # build docker image
-docker build -f ../Dockerfile -t abayomiebi/postgres .
+docker build -f ../Dockerfile -t abayomiebi/pdx-gu .
 
 # push to docker hub
 docker push abayomiebi/postgres

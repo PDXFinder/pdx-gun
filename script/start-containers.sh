@@ -5,11 +5,11 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # remove database docker image
-docker rmi $(docker images |grep 'abayomiebi/postgres')
+docker rmi $(docker images |grep 'abayomiebi/pdx-gun')
 
 # remove hasura docker image
 docker rmi $(docker images |grep 'hasura/graphql-engine')
 
 # start all containers
-docker-compose up -d
+docker-compose -f ../docker-compose.yml up -d
 
