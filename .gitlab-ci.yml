@@ -1,21 +1,25 @@
 stages:
   - build
+  - test
 
-docker-build:
-  # Official docker image.
-  image: docker:latest
+build-jar:
+  image: maven:3-jdk-8
   stage: build
-  services:
-    - docker:dind
-  before_script:
-    - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-    - docker push "$CI_REGISTRY_IMAGE"
+    - echo "Building Jar File"
+    - mvn clean install
+  artifacts:
+    paths:
+      - pdx-gun.jar
+    expire_in: 1 day
 
-    # PUSH THE IMAGE TO DOCKER HUB
-    - echo "${PDX_DOCKER_HUB_PWD}" | docker login -u "${PDX_DOCKER_HUB_USER}" --password-stdin
+test:
+  stage: test
+  script:
+    - echo "Testing jar file exist"
+    - test -f "pdx-gun.jar"
 
-    - docker tag "${CI_REGISTRY_IMAGE}" "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
-    - docker push "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
-    - docker logout
+
+
+
+
