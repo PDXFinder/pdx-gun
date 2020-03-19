@@ -36,7 +36,7 @@ public class DbSeeder {
         DbTable resourceUrlTable = create.resourceUrlTable(geneTable, resourceTable);
 
 
-        Map<Integer, List<Object>> resourceMap = this.insert.resourceTable(resourceTable);
+        this.insert.resourceTable(resourceTable);
 
         Set<String> genes = this.fileHandler.loadGenes(Location.ONCO_MX_FILE.get());
         Map<Integer, List<Object>> geneMap = this.insert.geneTable(geneTable, genes);

@@ -22,7 +22,7 @@ public class Insert {
     }
 
 
-    public Map<Integer, List<Object>> resourceTable(DbTable resourceTable) {
+    public void resourceTable(DbTable resourceTable) {
 
         dataMap = new LinkedHashMap<>();
 
@@ -35,7 +35,6 @@ public class Insert {
         String query = sqlFacade.insertQuery(resourceTable, dataMap);
         fileHandler.write(query, Location.DESTINATION.get() , true );
 
-        return dataMap;
     }
 
 

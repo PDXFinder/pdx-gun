@@ -65,12 +65,12 @@ public class FileHandler {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
 
                 String inputLine;
-                int x = 1;
+                int progress = 1;
                 while ((inputLine = in.readLine()) != null) {
 
                     this.write(inputLine+"\n", destination.get(), true);
-                    if (x%100000 == 0) this.getSize(destination, x);
-                    x++;
+                    if (progress%100000 == 0) this.getSize(destination, progress);
+                    progress++;
                 }
             }
 
@@ -83,7 +83,6 @@ public class FileHandler {
 
     public void write(String data, String destination, Boolean shouldAppend){
 
-        // Write to the file using BufferedReader and FileWriter
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(destination, shouldAppend))){
             writer.append(data);
         } catch (IOException e) {
@@ -114,7 +113,7 @@ public class FileHandler {
         double size = file.length() / (1024 * 1024);
 
         String anim= "|/-\\";
-        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded", anim.charAt(count % anim.length()),
+        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded ", anim.charAt(count % anim.length()),
                                         size, fileLocation) );
     }
 

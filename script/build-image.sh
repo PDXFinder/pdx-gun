@@ -17,7 +17,7 @@ docker rmi $(docker images |grep 'abayomiebi/pdx-gun')
 docker rmi $(docker images |grep 'hasura/graphql-engine')
 
 # build docker image
-docker build -f ../Dockerfile -t abayomiebi/pdx-gu .
+docker build -f ../Dockerfile -t abayomiebi/pdx-gun .
 
 # push to docker hub
 docker push abayomiebi/postgres
