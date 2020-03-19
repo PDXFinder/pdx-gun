@@ -23,7 +23,10 @@ public class DbSeeder {
         this.fileHandler = new FileHandler();
     }
 
-    public void initPostgres()throws IOException {
+    public void initPostgres()throws Exception {
+
+        // Download Files
+        this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
 
         // Initialize the postgres query file:
         fileHandler.delete(Location.DESTINATION.get());

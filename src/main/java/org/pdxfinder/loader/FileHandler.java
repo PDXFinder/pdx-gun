@@ -1,6 +1,13 @@
 package org.pdxfinder.loader;
 
+import org.pdxfinder.constants.Location;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +18,21 @@ import java.util.logging.Logger;
 public class FileHandler {
 
     private Logger log = Logger.getLogger(FileHandler.class.getName());
+
+    // Create a new trust manager that trust all certificates
+    private TrustManager[] trustAllCerts = new TrustManager[]{
+            new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+                public void checkServerTrusted(
+                        java.security.cert.X509Certificate[] certs, String authType) {
+                }
+            }
+    };
 
     public Set<String> loadGenes(String csvSource) throws IOException {
 
@@ -27,6 +49,36 @@ public class FileHandler {
         return geneSet;
     }
 
+
+    public void downloadFile(Location urlStr, Location destination) {
+
+        // Delete file if exist
+        this.delete(destination.get());
+
+        try {
+            // Activate the new trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            URL url = new URL(urlStr.get());
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()))) {
+
+                String inputLine;
+                int x = 1;
+                while ((inputLine = in.readLine()) != null) {
+
+                    this.write(inputLine+"\n", destination.get(), true);
+                    this.getSize(destination, urlStr, x);
+                    x++;
+                }
+            }
+
+        } catch (Exception e) {
+            log.warning(String.format("Unable to read from URL %s %s", urlStr, e));
+        }
+
+    }
 
 
     public void write(String data, String destination, Boolean shouldAppend){
@@ -53,5 +105,18 @@ public class FileHandler {
         }
         return report;
     }
+
+
+    private void getSize(Location fileLocation, Location desc, int count){
+
+        File file = new File(fileLocation.get());
+
+        double size = file.length() / (1024 * 1024);
+
+        String anim= "|/-\\";
+        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded from %s", anim.charAt(count % anim.length()),
+                                        size, fileLocation, desc.get()) );
+    }
+
 
 }
