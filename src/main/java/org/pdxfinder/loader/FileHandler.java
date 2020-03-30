@@ -1,5 +1,7 @@
 package org.pdxfinder.loader;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pdxfinder.constants.Location;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -11,9 +13,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
+
+import static java.lang.System.*;
+import java.security.cert.X509Certificate;
 
 public class FileHandler {
 
@@ -26,10 +30,10 @@ public class FileHandler {
                     return null;
                 }
                 public void checkClientTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
+                        X509Certificate[] certs, String authType) {
                 }
                 public void checkServerTrusted(
-                        java.security.cert.X509Certificate[] certs, String authType) {
+                        X509Certificate[] certs, String authType) {
                 }
             }
     };
@@ -37,7 +41,6 @@ public class FileHandler {
     public Set<String> loadGenes(String csvSource) throws IOException {
 
         Set<String> geneSet = new HashSet<>();
-
         try (BufferedReader in = new BufferedReader(new FileReader(csvSource))) {
             String line;
             while ((line = in.readLine()) != null) {
@@ -45,6 +48,18 @@ public class FileHandler {
                 geneSet.add(geneid);
             }
         }
+        return geneSet;
+    }
+
+    public Set<String> loadJsonList(Location jsonFile, String jsonKey) {
+
+        Set<String> geneSet = new HashSet<>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        JsonNode node = readJsonLocal(jsonFile.get());
+
+        List<Map<String, Object>> geneData = mapper.convertValue(node.get(jsonKey), List.class);
+        geneData.forEach(data -> geneSet.add(String.valueOf(data.get("name"))));
 
         return geneSet;
     }
@@ -113,9 +128,26 @@ public class FileHandler {
         double size = file.length() / (1024 * 1024);
 
         String anim= "|/-\\";
-        System.out.print( String.format("\r %s %s MegaByte %s file Downloaded ", anim.charAt(count % anim.length()),
+        out.print( String.format("\r %s %s MegaByte %s file Downloaded ", anim.charAt(count % anim.length()),
                                         size, fileLocation) );
     }
+
+
+    private JsonNode readJsonLocal(String jsonFileLink) {
+
+        JsonNode jsonNode = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+
+            BufferedReader br = new BufferedReader(new FileReader(jsonFileLink));
+            jsonNode = mapper.readTree(br);
+
+        }catch (Exception e) {}
+
+        return jsonNode;
+    }
+
 
 
 }

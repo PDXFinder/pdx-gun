@@ -10,6 +10,8 @@ import org.pdxfinder.query.Insert;
 import java.io.IOException;
 import java.util.*;
 
+import static java.lang.System.*;
+
 public class DbSeeder {
 
     private Insert insert;
@@ -23,10 +25,21 @@ public class DbSeeder {
         this.fileHandler = new FileHandler();
     }
 
-    public void initPostgres()throws Exception {
+
+    public void testi(){
 
         // Download Files
-        this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
+        this.fileHandler.downloadFile(Location.CIVIC_DB_URL_ONLINE, Location.CIVIC_DB_FILE);
+        Set<String> data = this.fileHandler.loadJsonList(Location.CIVIC_DB_FILE, "result");
+
+        out.println(data);
+    }
+
+
+    public void test()throws IOException {
+
+        // Download Files
+        //this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
 
         // Initialize the postgres query file:
         fileHandler.delete(Location.DESTINATION.get());
@@ -34,7 +47,6 @@ public class DbSeeder {
         DbTable resourceTable = create.resourceTable();
         DbTable geneTable = create.getGeneTable();
         DbTable resourceUrlTable = create.resourceUrlTable(geneTable, resourceTable);
-
 
         this.insert.resourceTable(resourceTable);
 
