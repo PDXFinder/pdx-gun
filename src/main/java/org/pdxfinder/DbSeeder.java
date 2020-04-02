@@ -26,7 +26,7 @@ public class DbSeeder {
     }
 
 
-    public void testi(){
+    public void testLoad(){
 
         // Download Files
         this.fileHandler.downloadFile(Location.CIVIC_DB_URL_ONLINE, Location.CIVIC_DB_FILE);
@@ -36,7 +36,7 @@ public class DbSeeder {
     }
 
 
-    public void test()throws IOException {
+    public void loadData()throws IOException {
 
         // Download Files
         this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
