@@ -12,4 +12,3 @@ docker rmi $(docker images |grep 'hasura/graphql-engine')
 
 # start all containers
 docker-compose -f ../docker-compose.yml up -d
-
