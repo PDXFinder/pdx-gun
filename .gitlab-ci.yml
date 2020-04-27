@@ -42,10 +42,10 @@ docker-build:
     - docker push "$CI_REGISTRY_IMAGE"
 
     # PUSH THE IMAGE TO DOCKER HUB
-    - echo "${PDX_DOCKER_HUB_PWD}" | docker login -u "${PDX_DOCKER_HUB_USER}" --password-stdin
+    - echo "${DOCKER_HUB_PWD}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
 
-    - docker tag "${CI_REGISTRY_IMAGE}" "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
-    - docker push "${PDX_DOCKER_HUB_USER}"/"${PDX_DOCKER_HUB_REPO}"
+    - docker tag "${CI_REGISTRY_IMAGE}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}"
+    - docker push "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}"
     - docker logout
 
 

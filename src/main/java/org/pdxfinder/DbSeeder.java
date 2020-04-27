@@ -39,7 +39,7 @@ public class DbSeeder {
     public void loadData()throws IOException {
 
         // Download Files
-        this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
+       // this.fileHandler.downloadFile(Location.ONCO_MX_URL_ONLINE, Location.ONCO_MX_FILE);
 
         // Initialize the postgres query file:
         fileHandler.delete(Location.DESTINATION.get());

@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   postgres:
-    image: pdxfinder/pdx-gun
+    image: abayomiebi/pdx-gun
     restart: always
  
     environment:

@@ -5,7 +5,7 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # remove database docker image
-docker rmi $(docker images |grep 'pdxfinder/pdx-gun')
+docker rmi $(docker images |grep 'abayomiebi/pdx-gun')
 
 # remove hasura docker image
 docker rmi $(docker images |grep 'hasura/graphql-engine')
