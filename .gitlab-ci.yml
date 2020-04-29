@@ -75,7 +75,7 @@ deploy:
     - kubectl config use-context "${KUBERNETES_NAMESPACE}"
     - kubectl version
 
-    - sed -i "s/latest/${NOW}/g" kube/database/pdx-gun-database-deployment.yaml
-    - kubectl apply -f kube/database/pdx-gun-database-deployment.yaml --record
-    - kubectl rollout status -f kube/database/pdx-gun-database-deployment.yaml
+    - sed -i "s/latest/${NOW}/g" kube/database/pdx-gun-database-deployment.yml
+    - kubectl apply -f kube/database/pdx-gun-database-deployment.yml --record
+    - kubectl rollout status -f kube/database/pdx-gun-database-deployment.yml
     - kubectl get all,ing
