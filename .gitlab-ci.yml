@@ -76,6 +76,10 @@ deploy:
     - kubectl version
 
     - sed -i "s/latest/${NOW}/g" kube/database/pdx-gun-database-deployment.yml
-    - kubectl apply -f kube/database/pdx-gun-database-deployment.yml --record
-    - kubectl rollout status -f kube/database/pdx-gun-database-deployment.yml
+      - kubectl apply -f kube/database/pdx-gun-database-deployment.yml --record
+      - kubectl rollout status -f kube/database/pdx-gun-database-deployment.yml
+
+      - kubectl apply -f kube/hasura/hasura-deployment.yml --record
+      - kubectl rollout status -f kube/hasura/hasura-deployment.yml
+
     - kubectl get all,ing
