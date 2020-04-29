@@ -32,20 +32,35 @@ init-database:
 docker-build:
   # Official docker image.
   image: docker:latest
+  variables:
+    # For EBI you need to override the definition of CI_REGISTRY to remove the port number
+    CI_REGISTRY: dockerhub.ebi.ac.uk
+    CI_REGISTRY_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH
+
   stage: docker
   services:
     - docker:dind
   before_script:
     - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    - NOW=$(date '+%Y-%m-%d-%H-%M-%S')
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - echo "${CI_REGISTRY_IMAGE}":"${NOW}"
+
+    - docker build --pull -t "$CI_REGISTRY_IMAGE":"${NOW}" .
+    #- docker commit refdbcontainer "${CI_REGISTRY_IMAGE}":"${NOW}"
+    - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${CI_REGISTRY_IMAGE}":latest
     - docker push "$CI_REGISTRY_IMAGE"
+
+    - docker logout ${CI_REGISTRY}
+
 
     # PUSH THE IMAGE TO DOCKER HUB
     - echo "${DOCKER_HUB_PWD}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
 
-    - docker tag "${CI_REGISTRY_IMAGE}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}"
+    - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":"${NOW}"
+    - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":latest
     - docker push "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}"
+
     - docker logout
 
 
@@ -59,3 +74,8 @@ deploy:
     - kubectl config set-context "${KUBERNETES_NAMESPACE}" --cluster=local --user=${KUBERNETES_USER} --namespace="${KUBERNETES_NAMESPACE}"
     - kubectl config use-context "${KUBERNETES_NAMESPACE}"
     - kubectl version
+
+#    - sed -i "s/latest/${NOW}/g" kube/database/pdx-gun-database-deployment.yaml
+#    - kubectl apply -f kube/database/pdx-gun-database-deployment.yaml --record
+#    - kubectl rollout status -f kube/database/pdx-gun-database-deployment.yaml
+#    - kubectl get all,ing
