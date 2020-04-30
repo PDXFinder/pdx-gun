@@ -1,29 +1,29 @@
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: hasura-ingress
-  namespace: pdx-gun
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    # adds 301 redirect with trailing slash
-    # see: https://github.com/kubernetes/ingress-nginx/issues/646
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(/postgres)$ $1/ permanent;
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-
-spec:
-  rules:
-    - host: www.pdx-gun.org
-      http:
-        paths:
-          - path: /postgres(/|$)(.*)
-            backend:
-              serviceName: hasura
-              servicePort: 80
-  tls:
-    - hosts:
-        - pdx-gun.org
-        - www.pdx-gun.org
-      secretName: pdx-gun-tls
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: hasura-ingress
+#  namespace: pdx-gun
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+#    nginx.ingress.kubernetes.io/rewrite-target: /$2
+#    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+#    # adds 301 redirect with trailing slash
+#    # see: https://github.com/kubernetes/ingress-nginx/issues/646
+#    nginx.ingress.kubernetes.io/configuration-snippet: |
+#      rewrite ^(/postgres)$ $1/ permanent;
+#    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#
+#spec:
+#  rules:
+#    - host: www.pdx-gun.org
+#      http:
+#        paths:
+#          - path: /postgres(/|$)(.*)
+#            backend:
+#              serviceName: hasura
+#              servicePort: 80
+#  tls:
+#    - hosts:
+#        - pdx-gun.org
+#        - www.pdx-gun.org
+#      secretName: pdx-gun-tls

@@ -13,7 +13,6 @@ spec:
       app: hasura
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: hasura
     spec:
@@ -26,13 +25,14 @@ spec:
               value: postgres://postgres:postgres@postgres:5432/postgres
             - name: HASURA_GRAPHQL_ENABLE_CONSOLE
               value: "true"
+            - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
+              value: startup, http-log, webhook-log, websocket-log, query-log
             - name: HASURA_GRAPHQL_ENABLE_TELEMETRY
               value: "false"
             - name: HASURA_GRAPHQL_UNAUTHORIZED_ROLE
               value: "public"
-          #- name: HASURA_GRAPHQL_ADMIN_SECRET
-          #  value: "mpi2#3478"
           ports:
             - containerPort: 8080
+              name: http
               protocol: TCP
           resources: {}

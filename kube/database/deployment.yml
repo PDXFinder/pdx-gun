@@ -11,25 +11,18 @@ spec:
     matchLabels:
       app: postgres
   minReadySeconds: 5
-  strategy:
-    # indicate which strategy we want for rolling update
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: postgres
     spec:
       containers:
         - image: abayomiebi/pdx-gun
           imagePullPolicy: Always
-          name: pdx-gun-database-container
-          livenessProbe:
-            tcpSocket:
-              port: 5432
+          name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              value: postgres
           ports:
             - containerPort: 5432
               name: http
