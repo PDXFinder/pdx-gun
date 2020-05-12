@@ -38,17 +38,17 @@ public class Insert {
     }
 
 
-    public Map<Integer, List<Object>> geneTable(DbTable geneTable, Set<String> genes, Resource resource){
+    public Map<Integer, List<Object>> geneTable(DbTable geneTable, Set<String> genes, Resource resource, Location resourceUrlPrefix, int startIndex){
 
         dataMap = new LinkedHashMap<>();
 
         // Gene table insert Queries
-        AtomicInteger index = new AtomicInteger(0);
+        AtomicInteger index = new AtomicInteger(startIndex);
         genes.forEach(geneName -> {
 
             List<Object> rowData = Arrays.asList(
                     geneName,
-                    String.format("https://oncomx.org/searchview/?gene=%s", geneName),
+                    String.format("%s%s", resourceUrlPrefix.get(), geneName),
                     resource.ordinal()+1
             );
             dataMap.put(index.incrementAndGet(), rowData);

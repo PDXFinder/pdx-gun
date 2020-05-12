@@ -38,7 +38,7 @@ public class FileHandler {
             }
     };
 
-    public Set<String> loadGenes(String csvSource) throws IOException {
+    public Set<String> extractOncomxGenes(String csvSource) throws IOException {
 
         Set<String> geneSet = new HashSet<>();
         try (BufferedReader in = new BufferedReader(new FileReader(csvSource))) {
@@ -51,7 +51,7 @@ public class FileHandler {
         return geneSet;
     }
 
-    public Set<String> loadJsonList(Location jsonFile, String jsonKey) {
+    public Set<String> extractCivicDBGenes(Location jsonFile, String jsonKey) {
 
         Set<String> geneSet = new HashSet<>();
         ObjectMapper mapper = new ObjectMapper();
