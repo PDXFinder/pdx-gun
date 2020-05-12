@@ -45,15 +45,13 @@ public class DbSeeder {
         fileHandler.delete(Location.DESTINATION.get());
 
         DbTable resourceTable = create.resourceTable();
-        DbTable geneTable = create.getGeneTable();
-        DbTable resourceUrlTable = create.resourceUrlTable(geneTable, resourceTable);
+        DbTable geneTable = create.geneTable(resourceTable);
 
         this.insert.resourceTable(resourceTable);
 
         Set<String> genes = this.fileHandler.loadGenes(Location.ONCO_MX_FILE.get());
-        Map<Integer, List<Object>> geneMap = this.insert.geneTable(geneTable, genes);
+        this.insert.geneTable(geneTable, genes, Resource.ONCOMX);
 
-        this.insert.resourceUrlTable(resourceUrlTable, geneMap, Resource.ONCOMX);
     }
 
 

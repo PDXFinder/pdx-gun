@@ -38,13 +38,18 @@ public class Create {
     }
 
 
-    public DbTable getGeneTable() {
+    public DbTable geneTable(DbTable resourceTable) {
 
         DbTable geneTable = sqlFacade.addTable(Table.GENE);
 
         // Add Columns to Gene table
         sqlFacade.addPrimaryKey(geneTable, Column.id);
         sqlFacade.addVarchar(geneTable, Column.name);
+        sqlFacade.addVarchar(geneTable, Column.url);
+        DbColumn resourceId = sqlFacade.addIntegerColumn(geneTable, Column.resource_id);
+
+        // Add Foreign key Constraints
+        sqlFacade.addFKConstraint(geneTable, resourceTable, resourceId);
 
         // Create Gene table Queries
         String createTable = sqlFacade.createTableQuery(geneTable);
