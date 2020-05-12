@@ -12,4 +12,4 @@ spec:
       protocol: TCP
   selector:
     app: hasura
-  type: LoadBalancer
+  type: ClusterIP  # To use an Ingress Controller
