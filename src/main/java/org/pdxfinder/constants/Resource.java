@@ -2,11 +2,11 @@ package org.pdxfinder.constants;
 
 public enum Resource {
 
-    CIVIC("Civic Database"),
-    ONCOMX("OncoMX Database"),
-    COSMIC("Cosmic Database"),
-    COSMIC_HALLMARK("Cosmic HallMark Database"),
-    CRAVAT("Open Cravat Database");
+    CIVIC("Civic"),
+    ONCOMX("OncoMX"),
+    COSMIC("Cosmic"),
+    COSMIC_HALLMARK("CosmicHallMark"),
+    CRAVAT("Cravat");
 
     private String value;
 
