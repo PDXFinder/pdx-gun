@@ -81,8 +81,12 @@ deploy:
     - sed -i "s/latest/${NOW}/g" kube/database/deployment.yml
     - kubectl apply -f kube/database/deployment.yml --record
     - kubectl rollout status -f kube/database/deployment.yml
+    - kubectl apply -f kube/database/service.yml --record
 
     - kubectl apply -f kube/hasura/hasura-deployment.yml --record
     - kubectl rollout status -f kube/hasura/hasura-deployment.yml
+
+    - kubectl apply -f kube/hasura/hasura-service.yml --record
+    - kubectl apply -f kube/hasura/hasura-ingress.yml --record
 
     - kubectl get all,ing
