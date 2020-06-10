@@ -38,9 +38,9 @@ public class Create {
     }
 
 
-    public DbTable geneTable(DbTable resourceTable) {
+    public DbTable dataTable(DbTable resourceTable, Table table) {
 
-        DbTable geneTable = sqlFacade.addTable(Table.GENE);
+        DbTable geneTable = sqlFacade.addTable(table);
 
         // Add Columns to Gene table
         sqlFacade.addPrimaryKey(geneTable, Column.id);

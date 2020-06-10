@@ -4,6 +4,7 @@ public enum Table {
 
     RESOURCE("resource"),
     GENE("gene"),
+    VARIANT("variant"),
     RESOURCE_URL("resource_url");
 
     private String value;

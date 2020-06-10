@@ -4,6 +4,7 @@ public enum Column {
 
     id,
     name,
+    variant_id,
     gene,
     item_id,
     gene_id,

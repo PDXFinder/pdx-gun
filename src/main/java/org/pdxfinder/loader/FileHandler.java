@@ -51,17 +51,29 @@ public class FileHandler {
         return geneSet;
     }
 
-    public Set<String> extractCivicDBGenes(Location jsonFile, String jsonKey) {
+    public Set<String> extractCivicData(Location jsonFile) {
 
         Set<String> geneSet = new HashSet<>();
         ObjectMapper mapper = new ObjectMapper();
-
         JsonNode node = readJsonLocal(jsonFile.get());
-
-        List<Map<String, Object>> geneData = mapper.convertValue(node.get(jsonKey), List.class);
+        List<Map<String, Object>> geneData = mapper.convertValue(node.get("result"), List.class);
         geneData.forEach(data -> geneSet.add(String.valueOf(data.get("name"))));
 
         return geneSet;
+    }
+
+    public Map<String, String> extractCivicVariantData(Location jsonFile) {
+
+        Map<String, String> variants = new LinkedHashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = readJsonLocal(jsonFile.get());
+        List<Map<String, Object>> geneData = mapper.convertValue(node.get("records"), List.class);
+        geneData.forEach(data -> variants.put(
+                String.valueOf(data.get("id")),
+                String.valueOf(data.get("name")).replace("'", "''"))
+        );
+
+        return variants;
     }
 
 
@@ -82,7 +94,6 @@ public class FileHandler {
                 String inputLine;
                 int progress = 1;
                 while ((inputLine = in.readLine()) != null) {
-
                     this.write(inputLine+"\n", destination.get(), true);
                     if (progress%100000 == 0) this.getSize(destination, progress);
                     progress++;
@@ -112,7 +123,6 @@ public class FileHandler {
         try {
             Path path = Paths.get(localDirectory);
             Files.deleteIfExists(path);
-
             report = true;
         } catch (Exception e) {
             log.warning(e.getMessage());
@@ -124,9 +134,7 @@ public class FileHandler {
     private void getSize(Location fileLocation, int count){
 
         File file = new File(fileLocation.get());
-
-        double size = file.length() / (1024 * 1024);
-
+        double size = (double) file.length() / (1024 * 1024);
         String anim= "|/-\\";
         out.print( String.format("\r %s %s MegaByte %s file Downloaded ", anim.charAt(count % anim.length()),
                                         size, fileLocation) );
@@ -139,11 +147,11 @@ public class FileHandler {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
-
             BufferedReader br = new BufferedReader(new FileReader(jsonFileLink));
             jsonNode = mapper.readTree(br);
-
-        }catch (Exception e) {}
+        }catch (Exception e) {
+            out.println("Could not read json file");
+        }
 
         return jsonNode;
     }

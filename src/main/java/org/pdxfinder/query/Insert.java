@@ -38,38 +38,51 @@ public class Insert {
     }
 
 
-    public Map<Integer, List<Object>> geneTable(DbTable geneTable, Set<String> genes, Resource resource, Location resourceUrlPrefix, int startIndex){
+    public void generateQuery(Map<Integer, List<Object>> dataMap, DbTable table){
+        String query = sqlFacade.insertQuery(table, dataMap);
+        fileHandler.write(query, Location.DESTINATION.get() , true );
+    }
 
+    public Map<Integer, List<Object>>  geneTableQuery(Set<String> dataSet,
+                                                      Resource resource,
+                                                      Location resourceUrlPrefix,
+                                                      int startIndex){
         dataMap = new LinkedHashMap<>();
-
         // Gene table insert Queries
         AtomicInteger index = new AtomicInteger(startIndex);
-        genes.forEach(geneName -> {
-
+        dataSet.forEach(data -> {
             List<Object> rowData = Arrays.asList(
-                    geneName,
-                    String.format("%s%s", resourceUrlPrefix.get(), geneName),
+                    data,
+                    String.format("%s%s", resourceUrlPrefix.get(), data),
                     resource.ordinal()+1
             );
             dataMap.put(index.incrementAndGet(), rowData);
-
         });
-
-        // Generate Gene table Queries
-        String query = sqlFacade.insertQuery(geneTable, dataMap);
-        fileHandler.write(query, Location.DESTINATION.get() , true );
-
         return dataMap;
     }
 
+    public Map<Integer, List<Object>>  variantTableQuery(Map<String, String> dataSet,
+                                                         Resource resource,
+                                                         Location resourceUrlPrefix,
+                                                         int startIndex){
+        dataMap = new LinkedHashMap<>();
+        AtomicInteger index = new AtomicInteger(startIndex);
+        dataSet.forEach((variantId, variantName) -> {
+            List<Object> rowData = Arrays.asList(
+                    variantName,
+                    String.format("%s%s", resourceUrlPrefix.get(), variantId),
+                    resource.ordinal()+1
+            );
+            dataMap.put(index.incrementAndGet(), rowData);
+        });
+        return dataMap;
+    }
 
     public void resourceUrlTable(DbTable resourceUrlTable, Map<Integer, List<Object>> geneMap, Resource resource) {
 
         dataMap = new LinkedHashMap<>();
-
         AtomicInteger index = new AtomicInteger(0);
         geneMap.forEach((key, value) -> {
-
                             List<Object> rowData = new ArrayList<>();
                             rowData.add(key);
                             rowData.add(resource.ordinal() + 1);
