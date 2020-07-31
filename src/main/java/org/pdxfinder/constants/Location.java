@@ -16,7 +16,6 @@ public enum Location {
     ONCO_MX_URL_LOCAL(System.getProperty("user.dir")+"/oncoMX.csv"),
     ONCO_MX_URL_PREFIX("https://oncomx.org/searchview/?gene=");
 
-
     private String value;
 
     private Location(String val) {

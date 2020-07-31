@@ -30,31 +30,31 @@ init-database:
 
 
 docker-build:
-  # Official docker image.
-  image: docker:latest
-  variables:
-    # For EBI you need to override the definition of CI_REGISTRY to remove the port number
-    CI_REGISTRY: dockerhub.ebi.ac.uk
-    CI_REGISTRY_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH
+        # Official docker image.
+        image: docker:latest
+        variables:
+          # For EBI you need to override the definition of CI_REGISTRY to remove the port number
+          CI_REGISTRY: dockerhub.ebi.ac.uk
+          CI_REGISTRY_IMAGE: $CI_REGISTRY/$CI_PROJECT_PATH
 
-    # Solve issue: docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?
-    DOCKER_TLS_CERTDIR: ""
+          # Solve issue: docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?
+          DOCKER_TLS_CERTDIR: ""
 
-  stage: docker
-  services:
-    - docker:dind
-  before_script:
-    - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    - NOW=$(date '+%Y-%m-%d-%H-%M-%S')
-  script:
-    - echo "${CI_REGISTRY_IMAGE}":"${NOW}"
+        stage: docker
+        services:
+          - docker:dind
+        before_script:
+          - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+          - NOW=$(date '+%Y-%m-%d-%H-%M-%S')
+        script:
+          - echo "${CI_REGISTRY_IMAGE}":"${NOW}"
 
-    - docker build --pull -t "$CI_REGISTRY_IMAGE":"${NOW}" .
-    #- docker commit refdbcontainer "${CI_REGISTRY_IMAGE}":"${NOW}"
-    - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${CI_REGISTRY_IMAGE}":latest
-    - docker push "$CI_REGISTRY_IMAGE"
+          - docker build --pull -t "$CI_REGISTRY_IMAGE":"${NOW}" .
+          #- docker commit refdbcontainer "${CI_REGISTRY_IMAGE}":"${NOW}"
+          - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${CI_REGISTRY_IMAGE}":latest
+          - docker push "$CI_REGISTRY_IMAGE"
 
-    - docker logout ${CI_REGISTRY}
+          - docker logout ${CI_REGISTRY}
 
 
     # PUSH THE IMAGE TO DOCKER HUB
@@ -78,19 +78,19 @@ deploy:
     - kubectl config use-context "${KUBERNETES_NAMESPACE}"
     - kubectl version
 
-    - sed -i "s/latest/${NOW}/g" kube/database/deployment.yml
+    - sed -i "s/latest/${NOW}/g" k8-deploy/database/deployment.yml
 
     - kubectl delete all --all -n pdx-gun
 
-    - kubectl apply -f kube/database/deployment.yml --record
-    - kubectl rollout status -f kube/database/deployment.yml
+    - kubectl apply -f k8-deploy/database/deployment.yml --record
+    - kubectl rollout status -f k8-deploy/database/deployment.yml
 
-    - kubectl apply -f kube/database/service.yml --record
+    - kubectl apply -f k8-deploy/database/service.yml --record
 
-    - kubectl apply -f kube/hasura/hasura-deployment.yml --record
-    - kubectl rollout status -f kube/hasura/hasura-deployment.yml
+    - kubectl apply -f k8-deploy/hasura/hasura-deployment.yml --record
+    - kubectl rollout status -f k8-deploy/hasura/hasura-deployment.yml
 
-    - kubectl apply -f kube/hasura/hasura-service.yml --record
-    - kubectl apply -f kube/hasura/hasura-ingress.yml --record
+    - kubectl apply -f k8-deploy/hasura/hasura-service.yml --record
+    - kubectl apply -f k8-deploy/hasura/hasura-ingress.yml --record
 
     - kubectl get all,ing

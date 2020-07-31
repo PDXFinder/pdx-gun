@@ -101,7 +101,7 @@ public class FileHandler {
             }
 
         } catch (Exception e) {
-            log.warning(String.format("Unable to read from URL %s %s", urlStr, e));
+            log.warning(String.format("Unable to read from URL %s %s", urlStr.get(), e));
         }
 
     }
