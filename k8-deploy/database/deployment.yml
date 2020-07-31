@@ -17,7 +17,7 @@ spec:
         app: postgres
     spec:
       containers:
-        - image: abayomiebi/pdx-gun
+        - image: pdxfinder/pdx-gun
           imagePullPolicy: Always
           name: postgres
           env:
