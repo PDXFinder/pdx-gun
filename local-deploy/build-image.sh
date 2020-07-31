@@ -11,14 +11,14 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 
 # remove database docker image
-docker rmi $(docker images |grep 'abayomiebi/pdx-gun')
+docker rmi $(docker images |grep 'pdxfinder/pdx-gun')
 
 # remove hasura docker image
 docker rmi $(docker images |grep 'hasura/graphql-engine')
 
 # build docker image
-docker build -f ../Dockerfile -t abayomiebi/pdx-gun .
+docker build -f ../Dockerfile -t pdxfinder/pdx-gun .
 
 # push to docker hub
-docker push abayomiebi/pdx-gun
+docker push pdxfinder/pdx-gun
 
