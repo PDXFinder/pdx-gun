@@ -59,7 +59,7 @@ docker-build:
 
 
     # PUSH THE IMAGE TO DOCKER HUB
-    - echo "${DOCKER_HUB_PWD}" | docker login --username "${DOCKER_HUB_USER}" --password-stdin docker.io
+    - echo "${DOCKER_HUB_PWD}" | docker login --username="${DOCKER_HUB_USER}" --password-stdin 
 
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":"${NOW}"
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":latest
