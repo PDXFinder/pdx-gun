@@ -67,7 +67,7 @@ docker-build:
     - docker logout
 
 
-deploy:
+deploy-production:
   stage: deploy
   image: dtzar/helm-kubectl:2.13.0
   script:
@@ -80,7 +80,34 @@ deploy:
 
     - sed -i "s/latest/${NOW}/g" k8-deploy/database/deployment.yml
 
-    - kubectl delete all --all -n pdx-gun
+    - kubectl apply -f k8-deploy/database/deployment.yml --record
+    - kubectl rollout status -f k8-deploy/database/deployment.yml
+
+    - kubectl apply -f k8-deploy/database/service.yml --record
+
+    - kubectl apply -f k8-deploy/hasura/hasura-deployment.yml --record
+    - kubectl rollout status -f k8-deploy/hasura/hasura-deployment.yml
+
+    - kubectl apply -f k8-deploy/hasura/hasura-service.yml --record
+    - kubectl apply -f k8-deploy/hasura/hasura-ingress.yml --record
+
+    - kubectl get pods,service,deploy,replicaset,ing
+  only:
+    refs:
+      - master
+
+deploy-HH-WP-WEBADMIN:
+  stage: deploy
+  image: dtzar/helm-kubectl:2.13.0
+  script:
+    - kubectl config set-cluster local --server="${HH_WP_WEBADMIN_ENDPOINT}"
+    - kubectl config set clusters.local.certificate-authority-data "${HH_WP_WEBADMIN_CERTIFICATE_AUTHORITY}"
+    - kubectl config set-credentials pdx-gun-admin --token="${HH_WP_WEBADMIN_USER_TOKEN}"
+    - kubectl config set-context "${HH_WP_WEBADMIN_NAMESPACE}" --cluster=local --user=${HH_WP_WEBADMIN_USER} --namespace="${HH_WP_WEBADMIN_NAMESPACE}"
+    - kubectl config use-context "${HH_WP_WEBADMIN_NAMESPACE}"
+    - kubectl version
+
+    - sed -i "s/latest/${NOW}/g" k8-deploy/database/deployment.yml
 
     - kubectl apply -f k8-deploy/database/deployment.yml --record
     - kubectl rollout status -f k8-deploy/database/deployment.yml
@@ -93,4 +120,7 @@ deploy:
     - kubectl apply -f k8-deploy/hasura/hasura-service.yml --record
     - kubectl apply -f k8-deploy/hasura/hasura-ingress.yml --record
 
-    - kubectl get all,ing
+    - kubectl get pods,service,deploy,replicaset,ing
+  only:
+    refs:
+      - dev
