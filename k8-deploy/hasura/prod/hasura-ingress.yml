@@ -14,7 +14,7 @@ spec:
     - host:
       http:
         paths:
-          - path: /pdx-gun(/|$)(.*)
+          - path: /pdxfinder/prod/pdx-gun(/|$)(.*)
             backend:
               serviceName: hasura
               servicePort: 80

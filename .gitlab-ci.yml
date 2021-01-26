@@ -58,7 +58,7 @@ docker-build:
 
 
     # PUSH THE IMAGE TO DOCKER HUB
-    - echo "${DOCKER_HUB_PWD}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
+    - echo "${DOCKER_HUB_PWD}" | docker login  --username "${DOCKER_HUB_USER}" --password-stdin
 
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":"${NOW}"
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":latest
@@ -85,11 +85,11 @@ deploy-production:
 
     - kubectl apply -f k8-deploy/database/service.yml --record
 
-    - kubectl apply -f k8-deploy/hasura/hasura-deployment.yml --record
-    - kubectl rollout status -f k8-deploy/hasura/hasura-deployment.yml
+    - kubectl apply -f k8-deploy/hasura/prod/hasura-deployment.yml --record
+    - kubectl rollout status -f k8-deploy/hasura/prod/hasura-deployment.yml
 
-    - kubectl apply -f k8-deploy/hasura/hasura-service.yml --record
-    - kubectl apply -f k8-deploy/hasura/hasura-ingress.yml --record
+    - kubectl apply -f k8-deploy/hasura/prod/hasura-service.yml --record
+    - kubectl apply -f k8-deploy/hasura/prod/hasura-ingress.yml --record
 
     - kubectl get pods,service,deploy,replicaset,ing
   only:
@@ -114,11 +114,11 @@ deploy-HH-WP-WEBADMIN:
 
     - kubectl apply -f k8-deploy/database/service.yml --record
 
-    - kubectl apply -f k8-deploy/hasura/hasura-deployment.yml --record
-    - kubectl rollout status -f k8-deploy/hasura/hasura-deployment.yml
+    - kubectl apply -f k8-deploy/hasura/dev/hasura-deployment.yml --record
+    - kubectl rollout status -f k8-deploy/hasura/dev/hasura-deployment.yml
 
-    - kubectl apply -f k8-deploy/hasura/hasura-service.yml --record
-    - kubectl apply -f k8-deploy/hasura/hasura-ingress.yml --record
+    - kubectl apply -f k8-deploy/hasura/dev/hasura-service.yml --record
+    - kubectl apply -f k8-deploy/hasura/dev/hasura-ingress.yml --record
 
     - kubectl get pods,service,deploy,replicaset,ing
   only:

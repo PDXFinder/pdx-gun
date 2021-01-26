@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hasura
+    hasuraService: custom
+  name: hasura
+  namespace: pdx-gun-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+    spec:
+      containers:
+        - image: hasura/graphql-engine:v1.1.0
+          imagePullPolicy: IfNotPresent
+          name: hasura
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              value: postgres://postgres:postgres@postgres:5432/postgres
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: "true"
+            - name: HASURA_GRAPHQL_ENABLED_LOG_TYPES
+              value: startup, http-log, webhook-log, websocket-log, query-log
+            - name: HASURA_GRAPHQL_ENABLE_TELEMETRY
+              value: "false"
+            - name: HASURA_GRAPHQL_UNAUTHORIZED_ROLE
+              value: "public"
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          resources: {}
