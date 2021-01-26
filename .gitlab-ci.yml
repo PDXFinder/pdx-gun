@@ -45,7 +45,6 @@ docker-build:
   services:
     - docker:dind
   before_script:
-    - echo "logging in to docker.io.ebi.ac.uk"
     - echo $CI_BUILD_TOKEN | docker login --username "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - NOW=$(date '+%Y-%m-%d-%H-%M-%S')-"$CI_COMMIT_REF_NAME"
   script:
@@ -60,7 +59,7 @@ docker-build:
 
 
     # PUSH THE IMAGE TO DOCKER HUB
-    - docker login --username "${DOCKER_HUB_USER}" --password "${DOCKER_HUB_PWD}"
+    - echo "${DOCKER_HUB_PWD}" | docker login --username "${DOCKER_HUB_USER}" --password-stdin docker.io
 
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":"${NOW}"
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":latest
