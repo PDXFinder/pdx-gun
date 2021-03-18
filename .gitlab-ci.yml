@@ -47,23 +47,20 @@ docker-build:
     - echo $CI_BUILD_TOKEN | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     - NOW=$(date '+%Y-%m-%d-%H-%M-%S')
   script:
+    - export
     - echo "${CI_REGISTRY_IMAGE}":"${NOW}"
-
     - docker build --pull -t "$CI_REGISTRY_IMAGE":"${NOW}" .
     #- docker commit refdbcontainer "${CI_REGISTRY_IMAGE}":"${NOW}"
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${CI_REGISTRY_IMAGE}":latest
     - docker push "$CI_REGISTRY_IMAGE"
-
     - docker logout ${CI_REGISTRY}
 
-
     # PUSH THE IMAGE TO DOCKER HUB
+    - docker info
     - echo "${DOCKER_HUB_PWD}" | docker login -u "${DOCKER_HUB_USER}" --password-stdin
-
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":"${NOW}"
     - docker tag "${CI_REGISTRY_IMAGE}":"${NOW}" "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}":latest
     - docker push "${DOCKER_HUB_USER}"/"${DOCKER_HUB_REPO}"
-
     - docker logout
 
 
